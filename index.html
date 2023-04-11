@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link  href="https://fonts.googleapis.com/css?family=Anton" 
+rel="stylesheet" 
+type="text/css">
+    <title>📋 TypeWise 📋</title>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+    <div>
+    </div>
+    <div style="width: 95%">
+      <hr>
+    </div>
+    
+    <section class="bg_page">
+      <div class="fondo_folder">
+        <div class="editor">
+        <div class="line-numbers">
+          <span></span>
+        </div>
+        <textarea id="entrada" oninput="keyup(this)" onkeydown="keydown(event)"></textarea>
+        </div>
+        <div class="editor">
+          <div class="line-numbers">
+            <span></span>
+          </div>
+          <textarea id="consola" oninput="keyup(this)" onkeydown="keydown(event)" disabled></textarea>
+        </div>
+        <div class="flex_vertical">
+        <div class="botones">
+          <button onclick="agregar_pagina()" class="boton agregar_pagina"><span> Nueva Pagina</span></button>
+          <button onclick="borrar_pagina()" class="boton cerrar_pagina"><span> Cerrar Pagina</span></button>
+        </div>
+        <div class="botones">
+          <button onclick="Abrir()" class="boton control"><span> Abrir archivo</span></button>
+          <button onclick="Guardar()" class="boton control"><span> Guardar archivo</span></button>
+          <button onclick="Analizar()" class="boton control"><span> Analizar</span></button>
+        </div>
+      </div>
+    </div>
+      <div class="pestana" id="paginas">
+        <div class="numero_pestana pestana_activa" onclick="cambiar_pestana_activa(this,1)">
+          1
+        </div>
+      </div>
+    </section>
+    
+
+
+  </body>
+      <script src="main.js">
+    </script>
+</html>
