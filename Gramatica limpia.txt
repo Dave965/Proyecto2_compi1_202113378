@@ -1,0 +1,287 @@
+%{
+
+%}
+
+%lex
+%options case-insensitive
+
+%%
+
+[ \r\t]+ //blancos
+\s+     //ignorar blancos
+"//".* //comentarios una linea
+"/*"([^*]|("*"[^/]))+"*/" //comentarios multilinea
+
+//reservadas
+"int" 			return 'R_INT';
+"double" 			return 'R_DOUBLE';
+"boolean" 			return 'R_BOOLEAN';
+"char" 			return 'R_CHAR';
+"string" 			return 'R_STRING';
+"true" 			return 'R_TRUE';
+"false" 			return 'R_FALSE';
+"print" 			return 'R_PRINT';
+"if" 			return 'R_IF';
+"else" 			return 'R_ELSE';
+"while" 			return 'R_WHILE';
+"for" 			return 'R_FOR';
+"do" 			return 'R_DO';
+"switch" 			return 'R_SWITCH';
+"case" 			return 'R_CASE';
+"new" 			return 'R_NEW';
+"list" 			return 'R_LIST';
+"add" 			return 'R_ADD';
+"default" 			return 'R_DEFAULT';
+"break" 			return 'R_BREAK';
+"continue" 			return 'R_CONTINUE';
+"return" 			return 'R_RETURN';
+"void" 			return 'R_VOID';
+"tolower" 			return 'R_TOLOWER';
+"toupper" 			return 'R_TOUPPER';
+"length" 			return 'R_LENGTH';
+"truncate" 			return 'R_TRUNCATE';
+"round" 			return 'R_ROUND';
+"typeof" 			return 'R_TYPEOF';
+"tostring" 			return 'R_TOSTRING';
+"tochararray" 			return 'R_TOCHARARRAY';
+"main" 			return 'R_MAIN';
+"," 			return 'COMA';
+"." 			return 'PUNTO';
+//operadores aritmeticos
+"+" 			return 'MAS';
+"-" 			return 'MENOS';
+"*" 			return 'ASTERISCO';
+"/" 			return 'BARRA';
+"^" 			return 'POTENCIA';
+"%" 			return 'PORCENTAJE';
+//operadores relacionales
+"==" 			return 'IGUAL';
+"!=" 			return 'DESIGUAL';
+"<=" 			return 'MENORIGUAL';
+"<" 			return 'MENOR';
+">=" 			return 'MAYORIGUAL';
+">" 			return 'MAYOR';
+":" 			return 'DP';
+"?" 			return 'INTERROGACION';
+//logicos
+"||" 			return 'OR';
+"&&" 			return 'AND';
+"!" 			return 'NOT';
+//finalizacion
+";" 			return 'PC';
+"{" 			return 'LLAVE_A';
+"}" 			return 'LLAVE_C';
+"(" 			return 'PAREN_A';
+")" 			return 'PAREN_C';
+"[" 			return 'CORCHETE_A';
+"]" 			return 'CORCHETE_C';
+//asignacion
+"="  			return 'ASIGNACION';
+
+//variables
+[0-9]+"."[0-9]+ 			return 'DOUBLE';
+[0-9]+ 			return 'INT';
+"\'"(.|"\n"|"\\"|"\""|"\t"|"\'")"\'" 			{yytext = yytext.substr(1,yyleng-2); return 'CHAR';}
+"\""([^"]|("\\\""))+"\"" 			{yytext = yytext.substr(1,yyleng-2); return 'STRING';}
+[a-z_][a-z0-9_]* 			return 'ID';
+<<EOF>>               return 'EOF';
+.                     return 'INVALID';
+
+/lex
+
+%left 'OR'
+%left 'AND'
+%right 'NOT'
+%left 'MAYOR'
+%left 'MAYORIGUAL'
+%left 'MENOR'
+%left 'MENORIGUAL'
+%left 'DESIGUAL'
+%left 'IGUAL'
+%left 'MENOS'
+%left 'MAS'
+%left 'ASTERISCO'
+%left 'BARRA' 'PORCENTAJE'
+%left 'POTENCIA'
+
+
+%start s
+
+%%
+
+s: instrucciones EOF
+	| EOF;
+
+expression: aritmetico
+	| condicional
+	| logico
+	| actualizacion
+	| casteo
+	| acceso_vector
+	| acceso_lista
+	| llamada
+	| funcion_toupper
+	| funcion_tolower
+	| funcion_length
+	| funcion_round
+	| funcion_typeof
+	| funcion_tostring
+	| funcion_tochararray
+	| funcion_truncate
+	| PAREN_A expression PAREN_C 
+	| datos
+	| ID;
+
+instrucciones: instrucciones instruccion
+	| instruccion;
+
+instruccion: declaracion_variable
+	| asignacion_variable
+	| declaracion_vector
+	| modificacion_vector
+	| declaracion_lista
+	| agregar_lista
+	| modificacion_lista
+	| sentencia_if
+	| sentencia_switch
+	| sentencia_while
+	| sentencia_for
+	| sentencia_do_while
+	| declaracion_funcion
+	| declaracion_metodo
+	| funcion_print
+	| transferencia
+	| ternario
+	| funcion_main;
+
+aritmetico: MENOS expression
+	| expression POTENCIA expression
+	| expression BARRA expression
+	| expression ASTERISCO expression
+	| expression MAS expression
+	| expression MENOS expression
+	| expression PORCENTAJE expression;
+
+condicional: expression IGUAL expression
+	| expression DESIGUAL expression
+	| expression MENORIGUAL expression
+	| expression MENOR expression
+	| expression MAYORIGUAL expression
+	| expression MAYOR expression;
+
+logico: NOT expression
+	| expression AND expression
+	| expression OR expression;
+
+actualizacion: expression MAS MAS
+	| expression MENOS MENOS;
+
+casteo: PAREN_A tipo PAREN_C expression;
+
+tipo: R_INT
+	| R_DOUBLE
+	| R_BOOLEAN
+	| R_CHAR
+	| R_STRING;
+
+datos: DOUBLE
+	| CHAR
+	| STRING
+	| R_TRUE
+	| R_FALSE
+	| INT;
+
+transferencia: R_BREAK PC
+	| R_CONTINUE PC
+	| R_RETURN PC
+	| R_RETURN expression PC;
+
+
+ternario: condicional INTERROGACION expression DP expression;
+
+declaracion_variable: tipo ID PC
+	| tipo ID ASIGNACION expression PC;
+
+asignacion_variable: ID ASIGNACION expression PC;
+
+declaracion_vector: tipo CORCHETE_A CORCHETE_C ID ASIGNACION R_NEW tipo CORCHETE_A expression CORCHETE_C PC
+	| tipo CORCHETE_A CORCHETE_C ID ASIGNACION LLAVE_A lista_valores LLAVE_C PC;
+
+acceso_vector: ID CORCHETE_A expression CORCHETE_C;
+
+modificacion_vector: ID CORCHETE_A expression CORCHETE_C ASIGNACION expression PC;
+
+lista_valores: lista_valores COMA datos
+	| lista_valores COMA ID
+	| ID
+	| datos;
+
+declaracion_lista: R_LIST MENOR tipo MAYOR ID ASIGNACION R_NEW R_LIST MENOR tipo MAYOR PC;
+
+agregar_lista: ID PUNTO R_ADD PAREN_A expression PAREN_C PC;
+
+acceso_lista: ID CORCHETE_A CORCHETE_A expression CORCHETE_C CORCHETE_C;
+
+modificacion_lista: ID CORCHETE_A CORCHETE_A expression CORCHETE_C CORCHETE_C ASIGNACION expression PC;
+
+sentencia_if: R_IF PAREN_A expression PAREN_C LLAVE_A instrucciones LLAVE_C
+	| R_IF PAREN_A expression PAREN_C LLAVE_A instrucciones LLAVE_C R_ELSE LLAVE_A instrucciones LLAVE_C
+	| R_IF PAREN_A expression PAREN_C LLAVE_A instrucciones LLAVE_C R_ELSE sentencia_if;
+
+
+sentencia_switch: R_SWITCH  PAREN_A expression PAREN_C LLAVE_A lista_casos defecto LLAVE_C 
+	| R_SWITCH  PAREN_A expression PAREN_C LLAVE_A lista_casos LLAVE_C 
+	| R_SWITCH  PAREN_A expression PAREN_C LLAVE_A defecto LLAVE_C;
+
+lista_casos: lista_casos caso
+	| caso;
+
+caso: R_CASE expression DP instrucciones;
+
+defecto: R_DEFAULT DP instrucciones;
+
+sentencia_while: R_WHILE PAREN_A expression PAREN_C LLAVE_A instrucciones LLAVE_C;
+
+sentencia_for: R_FOR PAREN_A declaracion_variable PC condicional PC actualizacion PAREN_C LLAVE_A instrucciones LLAVE_C
+	| R_FOR PAREN_A asignacion_variable PC condicional PC actualizacion PAREN_C LLAVE_A instrucciones LLAVE_C;
+
+sentencia_do_while: R_DO LLAVE_A instrucciones LLAVE_C R_WHILE PAREN_A expression PAREN_C PC;
+
+declaracion_funcion: TIPO ID PAREN_A parametros PAREN_C LLAVE_A instrucciones LLAVE_C;
+
+declaracion_metodo: R_VOID ID PAREN_A parametros PAREN_C LLAVE_A instrucciones LLAVE_C;
+
+parametros: parametros COMA TIPO ID
+	| TIPO ID;
+
+llamada: ID PAREN_A parametros_llamada PAREN_C 
+	| ID PAREN_A PAREN_C;
+
+parametros_llamada: parametros_llamada COMA expression
+	| expression;
+
+funcion_print: R_PRINT PAREN_A expression PAREN_C PC;
+
+funcion_tolower: R_TOLOWER PAREN_A expression PAREN_C;
+
+funcion_toupper: R_TOUPPER PAREN_A expression PAREN_C;
+
+funcion_length: R_LENGTH PAREN_A datos PAREN_C
+	| R_LENGTH PAREN_A ID PAREN_C;
+
+funcion_truncate: R_TRUNCATE PAREN_A datos PAREN_C
+	| R_TRUNCATE PAREN_A ID PAREN_C;
+
+funcion_round: R_ROUND PAREN_A datos PAREN_C
+	| R_ROUND PAREN_A ID PAREN_C;
+
+funcion_typeof: R_TYPEOF PAREN_A datos PAREN_C
+	| R_TYPEOF PAREN_A ID PAREN_C;
+
+funcion_tostring: R_TOSTRING PAREN_A datos PAREN_C
+	| R_TOSTRING PAREN_A ID PAREN_C;
+
+funcion_tochararray: R_TOCHARARRAY PAREN_A datos PAREN_C
+	| R_TOCHARARRAY PAREN_A ID PAREN_C;
+
+funcion_main: R_MAIN llamada PC;

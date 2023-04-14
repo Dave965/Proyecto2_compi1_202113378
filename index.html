@@ -4,20 +4,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link  href="https://fonts.googleapis.com/css?family=Anton" 
+    <link  href="https://fonts.googleapis.com/css?family=Quicksand" 
 rel="stylesheet" 
 type="text/css">
     <title>📋 TypeWise 📋</title>
     <link rel="stylesheet" href="index.css">
   </head>
   <body>
-    <div>
+    <div class ="navBar">
+      <span class="nav_title">Typewise</span>
+      <span class="nav_sub" onclick="Cambiar('Archivos')">Archivos</span>
+      <span class="nav_sub" onclick="Cambiar('Editor')">Editor</span>
+      <span class="nav_sub" onclick="Cambiar('Reportes')">Reportes</span>
     </div>
     <div style="width: 95%">
       <hr>
     </div>
-    
-    <section class="bg_page">
+    <section class="bg_page hidden" id="Archivos">
+      <span class="nav_title">Archivos</span>
+    </section>
+    <section class="bg_page " id="Editor">
       <div class="fondo_folder">
         <div class="editor">
         <div class="line-numbers">
@@ -49,10 +55,26 @@ type="text/css">
         </div>
       </div>
     </section>
-    
+    <section class="bg_page hidden" id="Reportes">
+      <div id="selector_reporte">
+      </div>
+      <div id="lienzo">
+      </div>
+    </section>
 
 
   </body>
-      <script src="main.js">
-    </script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js" integrity="sha512-FHsFVKQ/T1KWJDGSbrUhTJyS1ph3eRrxI228ND0EGaEp6v4a/vGwPWd3Dtd/+9cI7ccofZvl/wulICEurHN1pg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
+    <script src="./Clases/variable.js"></script>
+    <script src="./Clases/lista.js"></script>
+    <script src="./Clases/vector.js"></script>
+    <script src="./Clases/funcion.js"></script>
+    <script src="./Clases/metodo.js"></script>
+    <script src="programa.js"></script>
+    <script src="Nodo.js"></script>
+    <script src="gramatica.js"></script>
+    <script src="main.js"></script>
 </html>

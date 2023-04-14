@@ -42,7 +42,7 @@ textarea {
   display: flex;
   flex-direction: column;
   width: 3vw;
-  height: 77vh;
+  height: 76vh;
   padding-top: 15px;
   padding-bottom: 15px;
 }
@@ -234,8 +234,111 @@ textarea {
   box-shadow: rgba(0, 0, 0, 0.5) 0px 19px 38px, rgba(0, 0, 0, 0.33) 0px 15px 12px;
 }
 
+.navBar{
+  user-select: none;
+  margin-top: 2vh;
+  margin-right: auto;
+  margin-left: 3vw;
+  color: #BBB;
+}
+
+hr{
+  margin-bottom: 4vh;
+}
+.nav_sub{
+  margin-right: 0px;
+  margin-left: 0px;
+  font-size: 150%;
+  padding-right: 1vw;
+  padding-left: 1vw;
+}
+
+.hidden{
+  display: none;
+}
+
+.nav_sub:hover{
+  cursor: pointer;
+}
+
+.nav_sub:nth-child(3){
+  border-left: 2px solid #FFF ;
+  border-right: 2px solid #FFF ;
+  margin: 0
+}
+
+.nav_title{
+  font-size: 350%;
+  color: #6F2232;
+  margin-right: 20px;
+}
+
+#selector_reporte{
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  align-items: center;
+  padding: 15px;
+  min-width: 45vw;
+  max-width: 45vw;
+  max-height: 78vh;
+}
+
+.card{
+  user-select: none;
+  overflow: hidden;
+  padding: 10px;
+  font-size: 200%;
+  font-weight: 900;
+  margin-bottom: 15px;
+  font-family: inherit;
+  text-align: left;
+  color: #F47174;
+  background-color: #414141;
+  border: 0;
+  border-radius: 10px;
+  min-width: 40vw;
+  min-height: 7vh;
+  transform: scale(1);
+  transition: color 1000ms, box-shadow 500ms;
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px,rgba(50, 50, 105, 0.15) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
+}
+
+.card::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #C3073F;
+  z-index: -50;
+  border-radius: 0px;
+  transition: transform 500ms ease-in-out;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.card:hover::before{
+  transform: scaleX(1);
+}
+
+.card:hover{
+  cursor:pointer;
+  color: #FFF;
+  transform: scale(1);
+  border:none;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 19px 38px, rgba(0, 0, 0, 0.33) 0px 15px 12px;
+}
+
+#lienzo{
+  background-color: #333;
+  border-radius: 25px;
+  width: 45vw;
+}
+
 html, body {
-  font-family: Anton;
+  font-family: Quicksand;
   display: flex;  
   flex-direction: column;
   background-color: #1A1A1D;
