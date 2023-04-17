@@ -273,7 +273,7 @@ hr{
   margin-right: 20px;
 }
 
-#selector_reporte{
+#selector_reporte, #selector_documento{
   display: flex;
   flex-direction: column;
   overflow: auto;
@@ -283,6 +283,8 @@ hr{
   max-width: 45vw;
   max-height: 78vh;
 }
+
+
 
 .card{
   user-select: none;
@@ -335,6 +337,8 @@ hr{
   background-color: #333;
   border-radius: 25px;
   width: 45vw;
+  overflow: hidden;
+  padding: 0;
 }
 
 html, body {

@@ -1,5 +1,5 @@
 class variable{
-	constructor(identificador, tipo, entorno){
+	constructor(identificador, tipo, entorno, fila, columna){
 		this.identificador = identificador.toLowerCase();
 		this.tipo = tipo.toLowerCase();
 		this.entorno = entorno;
@@ -20,5 +20,7 @@ class variable{
 				this.dato = "";
 				break;
 		}
+		this.fila = fila;
+		this.columna = columna;
 	} 
 }

@@ -21,7 +21,14 @@ type="text/css">
       <hr>
     </div>
     <section class="bg_page hidden" id="Archivos">
-      <span class="nav_title">Archivos</span>
+      <div id="selector_documento" style="margin-right: 2vw;">
+      </div>
+      <div class="editor">
+        <div class="line-numbers">
+          <span></span>
+        </div>
+         <textarea id="preview" disabled></textarea>
+        </div>
     </section>
     <section class="bg_page " id="Editor">
       <div class="fondo_folder">
@@ -35,7 +42,7 @@ type="text/css">
           <div class="line-numbers">
             <span></span>
           </div>
-          <textarea id="consola" oninput="keyup(this)" onkeydown="keydown(event)" disabled></textarea>
+          <textarea id="consola" disabled></textarea>
         </div>
         <div class="flex_vertical">
         <div class="botones">

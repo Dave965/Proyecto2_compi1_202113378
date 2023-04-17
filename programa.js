@@ -2,12 +2,13 @@ class programa{
 	constructor(ast){
 		this.ast = ast;
 		this.tabla_simbolos = [];
+		this.main;
 		this.tokens_entorno = ["Sentencia if", "Caso", "Default",
 			"Sentencia while","Sentencia do while", "Sentencia for", 
 			"Declaracion metodo", "Declaracion funcion"];
 
 		this.tokens_hijos = ["instrucciones","Declaracion variable","Asignacion variable",
-			"Actualizacion","Parametros"];
+			"Actualizacion","Parametros", "Condicional"];
 	}
 
 	areEqual(array1, array2) {
@@ -31,11 +32,11 @@ class programa{
 			tipo = actual.hijos[0].hijos[0].dato;
 			for(const simbolo of this.tabla_simbolos){
 				if(this.areEqual(simbolo.entorno,actual.entorno) && simbolo.identificador == identificador){
-					document.getElementById("consola").value += "la variable "+identificador+" ya fue declarada en el mismo entorno\n";
+					document.getElementById("consola").value += "error en linea: "+actual.fila+", columna: "+ actual.columna+", la variable "+identificador+" ya fue declarada en el mismo entorno\n";
 					return "error";
 				}
 			}
-			this.tabla_simbolos.push(new variable(identificador, tipo, actual.entorno));
+			this.tabla_simbolos.push(new variable(identificador, tipo, actual.entorno,actual.fila,actual.columna));
 		}else if (actual.token == "Parametros"){
 			let identificador, tipo;
 			for(const hijo of actual.hijos){
@@ -48,11 +49,11 @@ class programa{
 
 			for(const simbolo of this.tabla_simbolos){
 				if(this.areEqual(simbolo.entorno,actual.entorno) && simbolo.identificador == identificador){
-					document.getElementById("consola").value += "la variable "+identificador+" ya fue declarada en el mismo entorno\n";
+					document.getElementById("consola").value += "error en linea: "+actual.fila+", columna: "+ actual.columna+", la variable "+identificador+" ya fue declarada en el mismo entorno\n";
 					return "error";
 				}
 			}
-			this.tabla_simbolos.push(new variable(identificador, tipo, actual.entorno));
+			this.tabla_simbolos.push(new variable(identificador, tipo, actual.entorno,actual.fila,actual.columna));
 		}else if (actual.token == "Declaracion vector"){
 			let identificador, tipo;
 			for(const hijo of actual.hijos){
@@ -65,11 +66,11 @@ class programa{
 
 			for(const simbolo of this.tabla_simbolos){
 				if(this.areEqual(simbolo.entorno,actual.entorno) && simbolo.identificador == identificador){
-					document.getElementById("consola").value += "la variable "+identificador+" ya fue declarada en el mismo entorno\n";
+					document.getElementById("consola").value += "error en linea: "+actual.fila+", columna: "+ actual.columna+", la variable "+identificador+" ya fue declarada en el mismo entorno\n";
 					return "error";
 				}
 			}
-			this.tabla_simbolos.push(new vector(identificador, tipo, actual.entorno));
+			this.tabla_simbolos.push(new vector(identificador, tipo, actual.entorno,actual.fila,actual.columna));
 		}else if (actual.token == "Declaracion lista"){
 			let identificador, tipo;
 			for(const hijo of actual.hijos){
@@ -82,11 +83,11 @@ class programa{
 
 			for(const simbolo of this.tabla_simbolos){
 				if(this.areEqual(simbolo.entorno,actual.entorno) && simbolo.identificador == identificador){
-					document.getElementById("consola").value += "la variable "+identificador+" ya fue declarada en el mismo entorno\n";
+					document.getElementById("consola").value += "error en linea: "+actual.fila+", columna: "+ actual.columna+", la variable "+identificador+" ya fue declarada en el mismo entorno\n";
 					return "error";
 				}
 			}
-			this.tabla_simbolos.push(new lista(identificador, tipo, actual.entorno));
+			this.tabla_simbolos.push(new lista(identificador, tipo, actual.entorno,actual.fila,actual.columna));
 		}else if (actual.token == "Declaracion funcion"){
 			let identificador, tipo, argumentos, instrucciones;
 			argumentos = [];
@@ -105,11 +106,11 @@ class programa{
 
 			for(const simbolo of this.tabla_simbolos){
 				if(this.areEqual(simbolo.entorno,actual.entorno) && simbolo.identificador == identificador){
-					document.getElementById("consola").value += "la variable "+identificador+" ya fue declarada en el mismo entorno\n";
+					document.getElementById("consola").value += "error en linea: "+actual.fila+", columna: "+ actual.columna+", la variable "+identificador+" ya fue declarada en el mismo entorno\n";
 					return "error";
 				}
 			}
-			this.tabla_simbolos.push(new funcion(identificador, argumentos, tipo, actual.entorno, instrucciones));
+			this.tabla_simbolos.push(new funcion(identificador, argumentos, tipo, actual.entorno, instrucciones,actual.fila,actual.columna));
 		}else if (actual.token == "Declaracion metodo"){
 			let identificador, argumentos, instrucciones;
 			for(const hijo of actual.hijos){
@@ -125,11 +126,13 @@ class programa{
 
 			for(const simbolo of this.tabla_simbolos){
 				if(this.areEqual(simbolo.entorno,actual.entorno) && simbolo.identificador == identificador){
-					document.getElementById("consola").value += "la variable "+identificador+" ya fue declarada en el mismo entorno\n";
+					document.getElementById("consola").value += "error en linea: "+actual.fila+", columna: "+ actual.columna+", la variable "+identificador+" ya fue declarada en el mismo entorno\n";
 					return "error";
 				}
 			}
-			this.tabla_simbolos.push(new metodo(identificador, argumentos, actual.entorno, instrucciones));
+			this.tabla_simbolos.push(new metodo(identificador, argumentos, actual.entorno, instrucciones,actual.fila,actual.columna));
+		}else if (actual.token == "Funcion main"){
+			this.main = actual.hijos[1];
 		}
 
 		for(const hijo of actual.hijos){
@@ -138,6 +141,10 @@ class programa{
 				return "error";
 			}
 		}
+	}
+
+	correr_programa(){
+		this.main.ejecutar(this.tabla_simbolos);
 	}
 
 	calcular_entorno(actual){
@@ -173,7 +180,9 @@ class programa{
                 + "  <TD border=\"1\" bgcolor=\"#04AA6D\"><b><font color=\"White\">Identificador</font></b></TD>\n"
                 + "  <TD border=\"1\" bgcolor=\"#04AA6D\"><b><font color=\"White\">Objeto</font></b></TD>\n"
                 + "  <TD border=\"1\" bgcolor=\"#04AA6D\"><b><font color=\"White\">Tipo</font></b></TD>\n"
-                + "  <TD border=\"1\" bgcolor=\"#04AA6D\"><b><font color=\"White\">Entorno</font></b></TD>\n";
+                + "  <TD border=\"1\" bgcolor=\"#04AA6D\"><b><font color=\"White\">Entorno</font></b></TD>\n"
+                + "  <TD border=\"1\" bgcolor=\"#04AA6D\"><b><font color=\"White\">Linea</font></b></TD>\n"
+                + "  <TD border=\"1\" bgcolor=\"#04AA6D\"><b><font color=\"White\">Columna</font></b></TD>\n";
         dot += "  </TR>\n";
 
         for (const s of this.tabla_simbolos) {
@@ -186,12 +195,12 @@ class programa{
             }else{
             	dot+= "  <TD border=\"1\">local</TD>\n";
             }
+            dot+= "  <TD border=\"1\">"+s.fila+"</TD>\n";
+            dot+= "  <TD border=\"1\">"+s.columna+"</TD>\n";
             dot += "  </TR>\n";
         }
         
             dot += "</TABLE>>];\n}";
-        console.log(dot);
-      	console.log(this.tabla_simbolos);
         return dot;
 	}
 }
