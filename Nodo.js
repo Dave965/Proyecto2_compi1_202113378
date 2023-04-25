@@ -434,7 +434,6 @@ class Nodo{
 			let r2;
 			if(r1.valor == selected_case){
 				r2 = this.hijos[3].ejecutar(tabla_simbolos);
-				console.log(r2);
 				return r2;
 			}
 		}else if(this.token == "Default"){
@@ -496,12 +495,26 @@ class Nodo{
 			if(variable == null){
 				variable = this.buscar_simbolo(this.hijos[0].dato.toLowerCase(),this.entorno,"funcion",tabla_simbolos);
 			}
+			let clonada = tabla_simbolos;
 			if(this.hijos.length == 4){
 				let parametros = this.hijos[2].ejecutar(tabla_simbolos);
+				let args = [];
 				for(let i = 0; i < variable.argumentos.length; i++){
-
-					 let r1 = this.buscar_simbolo(variable.argumentos[i].identificador,variable.argumentos[i].entorno,"variable",tabla_simbolos);
-
+					args.push(variable.argumentos[i].identificador)
+				}
+				clonada=this.clonar(tabla_simbolos, args, variable.argumentos[0].entorno);
+				for(let i = 0; i < variable.argumentos.length; i++){
+					 let r1 = this.buscar_simbolo(variable.argumentos[i].identificador,variable.argumentos[i].entorno,"variable",clonada);
+					 if(r1 == null){
+					 	r1 = this.buscar_simbolo(variable.argumentos[i].identificador,variable.argumentos[i].entorno,"lista",clonada);
+					 }
+					 if(r1 == null){
+					 	r1 = this.buscar_simbolo(variable.argumentos[i].identificador,variable.argumentos[i].entorno,"vector",clonada);
+					 }
+					 if(r1 == null){
+					 	salida.value += "Error semantico en linea: "+this.fila+", columna: "+this.columna+", el id: \""+variable.argumentos[i]+"\" no está declarado";
+						throw true;
+					 }
 					 if(r1.tipo == parametros[i].tipo){
 					 		r1.dato= parametros[i].valor;
 					 }else{
@@ -510,7 +523,7 @@ class Nodo{
 					 }
 				}
 			}
-			let r2 = variable.instrucciones.ejecutar(tabla_simbolos);
+			let r2 = variable.instrucciones.ejecutar(clonada);
 			if(variable.constructor.name == "funcion"){
 				if(r2.valor.tipo == variable.tipo){
 					return r2.valor;
@@ -555,7 +568,7 @@ class Nodo{
 		}else if(this.token == "Funcion toCharArray"){
 			let r1 = this.hijos[2].ejecutar(tabla_simbolos);
 			if(r1.tipo == "string"){
-			return {tipo:"char", valor: r1.valor.split("")};
+				return {tipo:"char", valor: r1.valor.split("")};
 			}else{
 				salida.value += "Error semantico en linea: "+this.fila+", columna: "+this.columna+", error de tipos en la funcion toCharArray";
 				throw true;
@@ -610,4 +623,15 @@ class Nodo{
 		return simbolos_posibles[0];
 	}
 
+	clonar(tabla_simbolos,parametros,contexto){
+		let res = [];
+		for(let s of tabla_simbolos){
+			if(parametros.includes(s.identificador) && contexto == s.entorno){
+				res.push(Object.assign(Object.create(Object.getPrototypeOf(s)), s));
+			}else{
+				res.push(s);
+			}
+		}
+		return res;
+	}
 }

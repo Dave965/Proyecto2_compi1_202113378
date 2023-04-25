@@ -1,8 +1,21 @@
+int fibonacci1(int n){
+    if (n<2){
+        return n;
+    } else {
+        return (fibonacci1(n-1) + fibonacci1(n-2));
+    }
+}
+
+int valor;
+
 int funcion_suma(int a, int b){
 	int resultado = a+b;
 	return resultado;
 }
 
+void metodo_acceso_global(){
+	print("accediendo a una variable global: " +valor); //7
+}
 
 void funcion_main(){
 	int a = 2;
@@ -11,7 +24,8 @@ void funcion_main(){
 	list <string> compras = new list <string>;
 	a = 2*a+2;
 	print("a="+a); //6
-	print("resultado de (true||false && !true): " + true||false && !true); //true
+	string res_print = "resultado de (true||false && !true): ";
+	print( res_print+ true||false && !true); //true
 	if(a != 5){
 	
 	for(int i=0; i<length(s);i++){
@@ -24,21 +38,21 @@ void funcion_main(){
 	string t = (string) 2310.56423;
 	compras.add("manzana");
 	compras.add("pan");
-compras.add("queso");
-compras.add("mantequilla");
-compras.add("jamon");
-compras.add("jugo");
-print(" ");
-print("--------------------------");
-print("     Lista de compras     ");
-print("--------------------------");
+	compras.add("queso");
+	compras.add("mantequilla");
+	compras.add("jamon");
+	compras.add("jugo");
+	print(" ");
+	print("--------------------------");
+	print("     Lista de compras     ");
+	print("--------------------------");
 	for(int n = 0; n<length(compras); n++){
-	print((n+1)+".- "+compras[[n]]);
-}
-print("--------------------------");
-print(" ");
+		print((n+1)+".- "+compras[[n]]);
+	}
+	print("--------------------------");
+	print(" ");
 	int edad = 18;
-	
+	 
 	switch( edad ) {
 		Case 10:
 			Print("Tengo 10 anios.");
@@ -46,21 +60,21 @@ print(" ");
 			Break;
 		Case 18:
 			Print("Tengo 18 anios.");
-int x = 49;
+	int x = 49;
 	while (x<100){ if (x > 50)
 		{
-		print("Mayor que 50");
-		break;
+			print("Mayor que 50");
+			break;
 		}
 		else
 		{
-		print("Menor que 100");
+			print("Menor que 100");
 		//Más sentencias
 		}
-		X++;
+			X++;
 		//Más sentencias
 	}
-Break;
+		Break;
 			// mas sentencias
 		Case 25:
 			Print("Tengo 25 anios.");
@@ -72,7 +86,7 @@ Break;
 			Break;
 	}
 
-	/*int x = 49;
+	/*int x = 49
 	while (x<100){ if (x > 50)
 		{
 		print("Mayor que 50");
@@ -92,7 +106,19 @@ Break;
 	S = toloweR(s);
 	print("toUpper(s): "+s); // este es un string
 	print("funcion_suma(5,3): "+funcion_suma(5, 3)); // 8
+	print("funcion_suma(20,2): "+funcion_suma(20, 2)); // 22
+	list <char> palabra = new list <char>;
+	palabra = tochararray("prueba de char");
+	for(int n = 0; n<length(palabra); n++){
+		print((n+1)+".- "+palabra[[n]]);
+	}
+
+	print("---Secuencia fibonacci----");
+	for(int i=1;i<20;i++){
+		print(i+".- "+fibonacci1(i));
+	}
+	valor=7;
+	metodo_acceso_global();
 }
 
-
-main funcion_main();
+main funcion_main();	
